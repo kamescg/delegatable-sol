@@ -1,0 +1,150 @@
+// @ts-nocheck
+import { ethers } from 'hardhat';
+import { expect } from 'chai';
+const { createMembership, validateInvitation } = require('eth-delegatable-utils');
+
+const CONTRACT_NAME = 'YourContract';
+
+const ownerHexPrivateKey = 'ac0974bec39a17e36ba4a6b4d238ff944bacb478cbed5efcae784d7bf4f2ff80';
+const account1PrivKey = '59c6995e998f97a5a0044966f0945389dc9e86dae88c7a8412f4603b6b78690d';
+const account2PrivKey = '5de4111afa1a4b94908f83103eb1f1706367c2e68ca870fc3fb9a804cdab365a';
+
+describe(CONTRACT_NAME, function () {
+  it('setPurpose by owner changes purpose', async () => {
+    const targetString = 'A totally new purpose!';
+    const yourContract = await deployContract();
+    await yourContract.setPurpose(targetString);
+    expect(await yourContract.purpose()).to.equal(targetString);
+  });
+
+  it.skip('other accounts cannot set purpose', async () => {
+    const [_owner, addr1] = await ethers.getSigners();
+    const targetString = 'A totally BAD purpose!';
+    const yourContract = await deployContract();
+    try {
+      await yourContract.connect(addr1).setPurpose(targetString);
+    } catch (err) {
+      expect(err.message).to.include('Ownable: caller is not the owner');
+    }
+  });
+
+  it.skip('delegates can delegate', async () => {
+    const [owner, addr1, addr2, addr3] = await ethers.getSigners();
+    console.log(`owner: ${owner.address}`);
+    console.log(`addr1: ${addr1.address}`);
+    console.log(`addr2: ${addr2.address}`);
+    console.log(`addr3: ${addr3.address}`);
+
+    const targetString = 'A totally DELEGATED purpose!';
+    const yourContract = await deployContract();
+    const { chainId } = await yourContract.provider.getNetwork();
+    const contractInfo = {
+      chainId,
+      verifyingContract: yourContract.address,
+      name: CONTRACT_NAME,
+    };
+    const ownerMembership = createMembership({
+      contractInfo,
+      key: ownerHexPrivateKey,
+    });
+
+    /* If no delegation object is provided, a basic one is automatically generated.
+     * The verifyingContract is used as a base caveat, and is passed terms of 0.
+     */
+    const account1Invitation = ownerMembership.createInvitation({
+      recipientAddress: addr1.address,
+      delegation: {
+        delegate: addr1.address,
+        authority: '0x0000000000000000000000000000000000000000000000000000000000000000',
+        caveats: [],
+      },
+    });
+
+    // Create a delegated signer as a "membership":
+    const account1Membership = createMembership({
+      invitation: account1Invitation,
+      key: account1PrivKey,
+      contractInfo,
+    });
+
+    // First delegate signs the second delegation:
+    const delegation2 = {
+      delegate: addr2.address,
+      // Absent authority will auto generate from the invitation that initialized this membership.
+      caveats: [],
+    };
+    const account2Invitation = account1Membership.createInvitation({
+      delegation: delegation2,
+    });
+    const account2Membership = createMembership({
+      invitation: account2Invitation,
+      key: account2PrivKey,
+      contractInfo,
+    });
+
+    // Third delegation is to a generated invite (no key in advance):
+    const account3Invitation = account2Membership.createInvitation();
+    expect(
+      validateInvitation({
+        invitation: account3Invitation,
+        contractInfo,
+      }),
+    ).to.equal(true);
+    const account3Membership = createMembership({
+      invitation: account3Invitation,
+      contractInfo,
+    });
+
+    // Second delegate signs the invocation message:
+    const desiredTx = await yourContract.populateTransaction.setPurpose(targetString);
+    const invocationMessage = {
+      replayProtection: {
+        nonce: '0x01',
+        queue: '0x00',
+      },
+      batch: [
+        {
+          transaction: {
+            to: yourContract.address,
+            gasLimit: '10000000000000000',
+            data: desiredTx.data,
+          },
+        },
+      ],
+    };
+    const signedInvocations = account3Membership.signInvocations(invocationMessage);
+
+    // A third party can submit the invocation method to the chain:
+    const res = await yourContract.connect(addr3).invoke([signedInvocations]);
+
+    // Verify the change was made:
+    expect(await yourContract.purpose()).to.equal(targetString);
+  });
+});
+
+async function deployContract() {
+  const YourContract = await ethers.getContractFactory(CONTRACT_NAME);
+  const yourContract = await YourContract.deploy(CONTRACT_NAME);
+  return yourContract.deployed();
+}
+
+function fromHexString(hexString) {
+  return new Uint8Array(hexString.match(/.{1,2}/g).map((byte) => parseInt(byte, 16)));
+}
+
+function signTypedDataify(friendlyTypes) {
+  const types = {};
+  Object.keys(friendlyTypes).forEach((typeName) => {
+    const type = friendlyTypes[typeName];
+    types[typeName] = [];
+
+    Object.keys(friendlyTypes[typeName]).forEach((subTypeName) => {
+      const subType = friendlyTypes[typeName][subTypeName];
+      types[typeName].push({
+        name: subTypeName,
+        type: subType,
+      });
+    });
+  });
+  return types;
+}
