@@ -9,7 +9,8 @@
     "private-vars-leading-underscore": "off",
     "code-complexity": "warn",
     "const-name-snakecase": "warn",
-    "function-max-lines": "warn",
+    "function-max-lines": "180",
+    "no-inline-assembly": "false",
     "func-visibility": [
       "warn",
       {
