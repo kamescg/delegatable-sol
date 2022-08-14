@@ -15,7 +15,10 @@ contract ERC20AllowanceEnforcer is CaveatEnforcer {
     ) public override returns (bool) {
         bytes4 targetSig = bytes4(transaction.data[0:4]);
         bytes4 allowedSig = bytes4(0xa9059cbb);
-        require(targetSig == allowedSig, "ERC20AllowanceEnforcer:invalid-method");
+        require(
+            targetSig == allowedSig,
+            "ERC20AllowanceEnforcer:invalid-method"
+        );
         uint256 limit = BytesLib.toUint256(terms, 0);
         uint256 sending = BytesLib.toUint256(transaction.data, 36);
         spentMap[msg.sender][delegationHash] += sending;

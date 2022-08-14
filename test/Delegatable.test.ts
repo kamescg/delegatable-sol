@@ -18,7 +18,7 @@ describe("Delegatable", () => {
   let wallet1: Wallet;
   let pk0: string;
   let pk1: string;
-  
+
   let AllowedMethodsEnforcer: Contract;
   let AllowedMethodsEnforcerFactory: ContractFactory;
   let Delegatable: Contract;
@@ -56,7 +56,8 @@ describe("Delegatable", () => {
   it("READ getDelegationTypedDataHash(Delegation memory delegation)", async () => {
     const DELEGATION = {
       delegate: wallet0.address,
-      authority: '0x0000000000000000000000000000000000000000000000000000000000000000',
+      authority:
+        "0x0000000000000000000000000000000000000000000000000000000000000000",
       caveats: [],
     };
     expect(await Delegatable.getDelegationTypedDataHash(DELEGATION)).to.eq(
@@ -68,7 +69,7 @@ describe("Delegatable", () => {
       CONTACT_NAME,
       Delegatable,
       pk0,
-      wallet1.address,
+      wallet1.address
     );
     const INVOCATION_MESSAGE = {
       replayProtection: {
@@ -82,15 +83,15 @@ describe("Delegatable", () => {
             to: Delegatable.address,
             gasLimit: "21000000000000",
             data: (
-              await Delegatable.populateTransaction.setPurpose(
-                'To delegate!'
-              )
+              await Delegatable.populateTransaction.setPurpose("To delegate!")
             ).data,
           },
         },
       ],
     };
-    expect(await Delegatable.getInvocationsTypedDataHash(INVOCATION_MESSAGE)).to.eq(
+    expect(
+      await Delegatable.getInvocationsTypedDataHash(INVOCATION_MESSAGE)
+    ).to.eq(
       "0xf6e94ae88b8b72d51444924d7cf26f28b4eaf7d5d274dffbdc83cb92cb4eeac5"
     );
   });
@@ -100,7 +101,7 @@ describe("Delegatable", () => {
       CONTACT_NAME,
       Delegatable,
       pk0,
-      wallet1.address,
+      wallet1.address
     );
     expect(await Delegatable.verifyDelegationSignature(_delegation)).to.eq(
       wallet0.address
@@ -111,7 +112,7 @@ describe("Delegatable", () => {
       CONTACT_NAME,
       Delegatable,
       pk0,
-      wallet1.address,
+      wallet1.address
     );
     const INVOCATION_MESSAGE = {
       replayProtection: {
@@ -125,9 +126,7 @@ describe("Delegatable", () => {
             to: Delegatable.address,
             gasLimit: "21000000000000",
             data: (
-              await Delegatable.populateTransaction.setPurpose(
-                'To delegate!'
-              )
+              await Delegatable.populateTransaction.setPurpose("To delegate!")
             ).data,
           },
         },
@@ -141,14 +140,12 @@ describe("Delegatable", () => {
 
   describe("contractInvoke(Invocation[] calldata batch)", () => {
     it("should SUCCEED to EXECUTE batched Invocations", async () => {
-      expect(await Delegatable.purpose()).to.eq(
-        "What is my purpose?"
-      );
+      expect(await Delegatable.purpose()).to.eq("What is my purpose?");
       const _delegation = generateDelegation(
         CONTACT_NAME,
         Delegatable,
         pk0,
-        wallet1.address,
+        wallet1.address
       );
       await Delegatable.contractInvoke([
         {
@@ -157,24 +154,18 @@ describe("Delegatable", () => {
             to: Delegatable.address,
             gasLimit: "21000000000000",
             data: (
-              await Delegatable.populateTransaction.setPurpose(
-                'To delegate!'
-              )
+              await Delegatable.populateTransaction.setPurpose("To delegate!")
             ).data,
           },
         },
       ]);
-      expect(await Delegatable.purpose()).to.eq(
-        "To delegate!"
-      );
+      expect(await Delegatable.purpose()).to.eq("To delegate!");
     });
   });
 
   describe("invoke(SignedInvocation[] calldata signedInvocations)", () => {
     it("should SUCCEED to EXECUTE a single Invocation from an unsigned authority", async () => {
-      expect(await Delegatable.purpose()).to.eq(
-        "What is my purpose?"
-      );
+      expect(await Delegatable.purpose()).to.eq("What is my purpose?");
       const INVOCATION_MESSAGE = {
         replayProtection: {
           nonce: "0x01",
@@ -187,35 +178,32 @@ describe("Delegatable", () => {
               to: Delegatable.address,
               gasLimit: "21000000000000",
               data: (
-                await Delegatable.populateTransaction.setPurpose(
-                  'To delegate!'
-                )
+                await Delegatable.populateTransaction.setPurpose("To delegate!")
               ).data,
             },
           },
         ],
       };
-      const invocation = delegatableUtils.signInvocation(INVOCATION_MESSAGE, pk0);
+      const invocation = delegatableUtils.signInvocation(
+        INVOCATION_MESSAGE,
+        pk0
+      );
       await Delegatable.invoke([
         {
           signature: invocation.signature,
           invocations: invocation.invocations,
         },
       ]);
-      expect(await Delegatable.purpose()).to.eq(
-        "To delegate!"
-      );
+      expect(await Delegatable.purpose()).to.eq("To delegate!");
     });
 
     it("should SUCCEED to EXECUTE batched SignedInvocations", async () => {
-      expect(await Delegatable.purpose()).to.eq(
-        "What is my purpose?"
-      );
+      expect(await Delegatable.purpose()).to.eq("What is my purpose?");
       const _delegation = generateDelegation(
         CONTACT_NAME,
         Delegatable,
         pk0,
-        wallet1.address,
+        wallet1.address
       );
       const INVOCATION_MESSAGE = {
         replayProtection: {
@@ -229,24 +217,23 @@ describe("Delegatable", () => {
               to: Delegatable.address,
               gasLimit: "21000000000000",
               data: (
-                await Delegatable.populateTransaction.setPurpose(
-                  'To delegate!'
-                )
+                await Delegatable.populateTransaction.setPurpose("To delegate!")
               ).data,
             },
           },
         ],
       };
-      const invocation = delegatableUtils.signInvocation(INVOCATION_MESSAGE, pk0);
+      const invocation = delegatableUtils.signInvocation(
+        INVOCATION_MESSAGE,
+        pk0
+      );
       await Delegatable.invoke([
         {
           signature: invocation.signature,
           invocations: invocation.invocations,
         },
       ]);
-      expect(await Delegatable.purpose()).to.eq(
-        "To delegate!"
-      );
+      expect(await Delegatable.purpose()).to.eq("To delegate!");
     });
   });
 });
