@@ -13,7 +13,11 @@ const error = (msg) => console.error(chalk.red(msg));
 const getContract = async (name) => {
   const { deployments } = hardhat;
   const signers = await hardhat.ethers.getSigners();
-  return hardhat.ethers.getContractAt(name, (await deployments.get(name)).address, signers[0]);
+  return hardhat.ethers.getContractAt(
+    name,
+    (await deployments.get(name)).address,
+    signers[0]
+  );
 };
 
 const verifyAddress = async (address, name, path = "", args = "") => {
@@ -92,13 +96,18 @@ async function verifyEtherscanClone() {
   fs.readdirSync(filePath).filter((fileName) => {
     if (fileName.includes(".json")) {
       const contractName = fileName.substring(0, fileName.length - 5).trim(); // strip .json
-      const contractDirPath = find.fileSync(contractName + ".sol", "./contracts")[0];
+      const contractDirPath = find.fileSync(
+        contractName + ".sol",
+        "./contracts"
+      )[0];
       if (!contractDirPath) {
         error(`There is no matching contract for ${contractName}. This is likely becuase the deployment contract name is different from the Solidity contract title.
          Run verification manually. See verifyEtherscanClone() for details`);
         return;
       }
-      const deployment = JSON.parse(fs.readFileSync(filePath + fileName, "utf8"));
+      const deployment = JSON.parse(
+        fs.readFileSync(filePath + fileName, "utf8")
+      );
 
       toplevelContracts.push({
         address: deployment.address,
@@ -120,7 +129,12 @@ async function verifyEtherscanClone() {
       });
     }
 
-    await verifyAddress(contract.address, contract.contractName, contract.contractPath, args);
+    await verifyAddress(
+      contract.address,
+      contract.contractName,
+      contract.contractPath,
+      args
+    );
   });
 }
 
