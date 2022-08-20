@@ -25,6 +25,10 @@ abstract contract Delegatable is IDelegatable, DelegatableCore {
         );
     }
 
+    /// @notice The hashes of the domain separators used in the EIP712 domain hash.
+    mapping (address => bytes32) public domainHashes;
+
+
     /* ===================================================================================== */
     /* External Functions                                                                    */
     /* ===================================================================================== */
