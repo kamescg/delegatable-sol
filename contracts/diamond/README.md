@@ -8,7 +8,7 @@ Once this facet is added to a Diamond, it will have all of the Delegatable inter
 
 ## Setup and Requirements
 
-Any authority checks in the other facets must not use `msg.sender` directly, per the normal integration process. You can see an example of this substitution in [our modified LibDiamond file](./libraries/LibDiamond.sol).
+Any authority checks in the other facets must not use `msg.sender` directly, but should use our special `_msgSender()` override method, per the normal Delegatable integration process. You can see an example of this substitution in [our modified LibDiamond file](./libraries/LibDiamond.sol).
 
 If you're using [ERC-712 signTypedData signatures](https://eips.ethereum.org/EIPS/eip-712), it's probably a best practice to re-use your `domainHash` between other signatures and the Delegatable ones. To reuse the domainHash storage with this facet, you can copy the `AppStorage` usage in [DelegatableFacet.sol](./DelegatableFacet.sol).
 
