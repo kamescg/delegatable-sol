@@ -8,9 +8,24 @@ import {DelegatableCore} from "./DelegatableCore.sol";
 import {IDelegatable} from "./interfaces/IDelegatable.sol";
 
 contract Delegatable is IDelegatable, DelegatableCore {
+    /* ===================================================================================== */
+    /* External Functions                                                                    */
+    /* ===================================================================================== */
 
     /// @notice The hashes of the domain separators used in the EIP712 domain hash.
     mapping(address => bytes32) public domainHashes;
+
+    /**
+     * @notice Typehash Initializer - To be called by a diamond after facet assignment.
+     */
+    function setDomainHash() public {
+        domainHashes[address(this)] = getEIP712DomainHash(
+            msg.sender.toHex(),
+            "1",
+            block.chainid,
+            address(this)
+        );
+    }
 
     /**
      * @notice Domain Hash Getter
@@ -21,10 +36,6 @@ contract Delegatable is IDelegatable, DelegatableCore {
         assert(domainHash != 0, "Domain hash not set");
         return domainHash;
     }
-
-    /* ===================================================================================== */
-    /* External Functions                                                                    */
-    /* ===================================================================================== */
 
     /// @inheritdoc IDelegatable
     function getDelegationTypedDataHash(Delegation memory delegation)
