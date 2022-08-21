@@ -68,7 +68,7 @@ library LibDiamond {
 
     function enforceIsContractOwner() internal view {
         require(
-            msg.sender == diamondStorage().contractOwner,
+            _msgSender() == diamondStorage().contractOwner,
             "LibDiamond: Must be contract owner"
         );
     }
@@ -348,4 +348,29 @@ library LibDiamond {
         }
         require(contractSize > 0, _errorMessage);
     }
+
+    /*
+     * @notice Overrides the msgSender to enable delegation message signing.
+     * @returns address - The account whose authority is being acted on.
+     */
+    function _msgSender()
+        internal
+        view
+        returns (address sender)
+    {
+        if (msg.sender == address(this)) {
+            bytes memory array = msg.data;
+            uint256 index = msg.data.length;
+            assembly {
+                sender := and(
+                    mload(add(array, index)),
+                    0xffffffffffffffffffffffffffffffffffffffff
+                )
+            }
+        } else {
+            sender = msg.sender;
+        }
+        return sender;
+    }
+
 }

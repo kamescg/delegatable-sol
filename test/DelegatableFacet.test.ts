@@ -111,7 +111,7 @@ describe("DelegatableFacet", () => {
     delegatableUtils = generateUtil(CONTRACT_INFO);
   });
 
-  describe.skip("contractInvoke(Invocation[] calldata batch)", () => {
+  describe("contractInvoke(Invocation[] calldata batch)", () => {
     it("should SUCCEED to EXECUTE batched Invocations", async () => {
       console.log("getting purpose");
       const purpose = await Diamond.purpose();
