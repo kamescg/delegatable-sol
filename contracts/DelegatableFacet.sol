@@ -7,21 +7,7 @@ import {Delegation, Invocation, Invocations, SignedInvocation, SignedDelegation}
 import {DelegatableCore} from "./DelegatableCore.sol";
 import {IDelegatable} from "./interfaces/IDelegatable.sol";
 
-abstract contract Delegatable is IDelegatable, DelegatableCore {
-
-    /**
-     * @notice Delegatable Constructor
-     * @param contractName string - The name of the contract
-     * @param version string - The version of the contract
-     */
-    constructor(string memory contractName, string memory version) {
-        domainHash = getEIP712DomainHash(
-            contractName,
-            version,
-            block.chainid,
-            address(this)
-        );
-    }
+contract Delegatable is IDelegatable, DelegatableCore {
 
     /// @notice The hashes of the domain separators used in the EIP712 domain hash.
     mapping(address => bytes32) public domainHashes;
@@ -32,7 +18,7 @@ abstract contract Delegatable is IDelegatable, DelegatableCore {
      */
     function getEIP712DomainHash() public view returns (bytes32) {
         bytes32 domainHash = domainHashes[msg.sender];
-        assert (domainHash != 0, "Domain hash not set");
+        assert(domainHash != 0, "Domain hash not set");
         return domainHash;
     }
 
