@@ -353,11 +353,7 @@ library LibDiamond {
      * @notice Overrides the msgSender to enable delegation message signing.
      * @returns address - The account whose authority is being acted on.
      */
-    function _msgSender()
-        internal
-        view
-        returns (address sender)
-    {
+    function _msgSender() internal view returns (address sender) {
         if (msg.sender == address(this)) {
             bytes memory array = msg.data;
             uint256 index = msg.data.length;
@@ -372,5 +368,4 @@ library LibDiamond {
         }
         return sender;
     }
-
 }

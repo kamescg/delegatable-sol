@@ -12,7 +12,7 @@ export function generateDelegation(
   authority = BASE_AUTH
 ) {
   const CONTRACT_INFO = {
-    chainId: contract.deployTransaction.chainId,
+    chainId: contract.provider._network.chainId,
     verifyingContract: contract.address,
     name: name,
   };
