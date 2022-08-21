@@ -10,6 +10,8 @@ Once this facet is added to a Diamond, it will have all of the Delegatable inter
 
 Any authority checks in the other facets must not use `msg.sender` directly, but should use our special `_msgSender()` override method, per the normal Delegatable integration process. You can see an example of this substitution in [our modified LibDiamond file](./libraries/LibDiamond.sol).
 
+If you're on the Ethereum mainnet, you use our pre-deployed [Delegatable Diamond Singleton at 0x22B7922dEA4816799380B78944d45669a37f4e98](https://etherscan.io/address/0x22b7922dea4816799380b78944d45669a37f4e98#code).
+
 If you're using [ERC-712 signTypedData signatures](https://eips.ethereum.org/EIPS/eip-712), it's probably a best practice to re-use your `domainHash` between other signatures and the Delegatable ones. To reuse the domainHash storage with this facet, you can copy the `AppStorage` usage in [DelegatableFacet.sol](./DelegatableFacet.sol).
 
 If you're already using that exact pattern for your `domainHash`, you can simply add the facet with no init code. If you are not using that exact pattern for storing a `domainHash`, you should add your facet with an initCode for setting that value:
@@ -17,19 +19,19 @@ If you're already using that exact pattern for your `domainHash`, you can simply
 ```javascript
 // Generate delegatable init code to generate domain typehash
 const populatedTx =
-  await DelegatableFacet.populateTransaction.setDomainHash(CONTACT_NAME);
+  await DelegatableFacet.populateTransaction.setDomainHash(CONTRACT_NAME);
 const initTypehashBytes = populatedTx.data;
 // Add delegatable facet to the diamond
 await Diamond.diamondCut(
   [
     {
-      facetAddress: DelegatableFacet.address,
+      facetAddress: '0x22B7922dEA4816799380B78944d45669a37f4e98',
       action: FacetCutAction.Add,
       functionSelectors: getSelectors(DelegatableFacet),
-      //   - run delegatable init code to generate domain typehash
     },
   ],
-  DelegatableFacet.address,
+  // run delegatable init code to generate domain typehash
+  '0x22B7922dEA4816799380B78944d45669a37f4e98',
   initTypehashBytes
 );
 ```
