@@ -33,7 +33,7 @@ contract Delegatable is IDelegatable, DelegatableCore {
      */
     function getEIP712DomainHash() public view returns (bytes32) {
         bytes32 domainHash = domainHashes[msg.sender];
-        assert(domainHash != 0, "Domain hash not set");
+        require(domainHash != 0, "Domain hash not set");
         return domainHash;
     }
 
