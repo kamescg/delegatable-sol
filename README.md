@@ -9,10 +9,20 @@
 
 Solidity framework for extending any contract with counterfactual revocable-delegation
 
+## Getting Started
+
+- [A high level summary of the goals of the Delegatable framework](https://mirror.xyz/0x55e2780588aa5000F464f700D2676fD0a22Ee160/pTIrlopsSUvWAbnq1qJDNKU1pGNLP8VEn1H8DSVcvXM).
+- [A series of conversations about the framework on YouTube](https://www.youtube.com/watch?v=Sh1-epThZV0&list=PLJP4kXm9a01qRJaNzCU47gOzkn1eNAlFO).
+- [A reference app called MobyMask](https://github.com/delegatable/MobyMask).
+- [A JS library for creating & redeeming delegations](https://www.npmjs.com/package/eth-delegatable-utils).
+- [A Delegatable Facet for Diamonds](./contracts/diamond/README.md)
+
 ## Deployment
 
 These contracts can be deployed to a network by running:
 `yarn deploy <networkName>`
+
+Some of them [have been deployed already and can be reused](./docs/deployments.md).
 
 ## Verification
 
@@ -29,10 +39,3 @@ Run the unit tests locally with:
 Generate the test coverage report with:
 `yarn coverage`
 
-## Getting Started
-
-- [A high level summary of the goals of the Delegatable framework](https://mirror.xyz/0x55e2780588aa5000F464f700D2676fD0a22Ee160/pTIrlopsSUvWAbnq1qJDNKU1pGNLP8VEn1H8DSVcvXM).
-- [A series of conversations about the framework on YouTube](https://www.youtube.com/watch?v=Sh1-epThZV0&list=PLJP4kXm9a01qRJaNzCU47gOzkn1eNAlFO).
-- [A reference app called MobyMask](https://github.com/delegatable/MobyMask).
-- [A JS library for creating & redeeming delegations](https://www.npmjs.com/package/eth-delegatable-utils).
-- [A Delegatable Facet for Diamonds](./contracts/diamond/README.md)

@@ -53,12 +53,4 @@ export default async function deploy(hardhat: HardhatRuntimeEnvironment) {
     log: true,
   });
 
-  await deploy("EIP1271Enforcer", {
-    contract: "EIP1271Enforcer",
-    from: deployer,
-    args: [],
-    skipIfAlreadyDeployed: true,
-    log: true,
-  });
-
 }
