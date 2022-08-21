@@ -17,6 +17,7 @@ contract Delegatable is IDelegatable, DelegatableCore {
 
     /**
      * @notice Typehash Initializer - To be called by a diamond after facet assignment.
+     * Yes, anyone can assign the facet's own name, but it doesn't do anything, so it's fine.
      */
     function setDomainHash(string calldata contractName) public {
         domainHashes[address(this)] = getEIP712DomainHash(
