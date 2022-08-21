@@ -8,8 +8,6 @@ import {DelegatableCore} from "./DelegatableCore.sol";
 import {IDelegatable} from "./interfaces/IDelegatable.sol";
 
 abstract contract Delegatable is IDelegatable, DelegatableCore {
-    /// @notice The hash of the domain separator used in the EIP712 domain hash.
-    bytes32 public immutable domainHash;
 
     /**
      * @notice Delegatable Constructor
@@ -29,15 +27,13 @@ abstract contract Delegatable is IDelegatable, DelegatableCore {
     mapping(address => bytes32) public domainHashes;
 
     /**
-      * @notice Domain Hash Getter
-      * @return bytes32 - The domain hash of the calling contract.
+     * @notice Domain Hash Getter
+     * @return bytes32 - The domain hash of the calling contract.
      */
-    function getEIP712DomainHash() 
-        public
-        view
-        returns (bytes32)
-    {
-        return domainHashes[msg.sender];
+    function getEIP712DomainHash() public view returns (bytes32) {
+        bytes32 domainHash = domainHashes[msg.sender];
+        assert (domainHash != 0, "Domain hash not set");
+        return domainHash;
     }
 
     /* ===================================================================================== */
@@ -53,7 +49,7 @@ abstract contract Delegatable is IDelegatable, DelegatableCore {
         bytes32 digest = keccak256(
             abi.encodePacked(
                 "\x19\x01",
-                domainHash,
+                getEIP712DomainHash(),
                 GET_DELEGATION_PACKETHASH(delegation)
             )
         );
@@ -69,7 +65,7 @@ abstract contract Delegatable is IDelegatable, DelegatableCore {
         bytes32 digest = keccak256(
             abi.encodePacked(
                 "\x19\x01",
-                domainHash,
+                getEIP712DomainHash(),
                 GET_INVOCATIONS_PACKETHASH(invocations)
             )
         );
