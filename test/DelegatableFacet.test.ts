@@ -136,16 +136,13 @@ describe("DelegatableFacet", () => {
           transaction: {
             to: Diamond.address,
             gasLimit: "21000000000000",
-            data: (
-              await Diamond.populateTransaction.setPurpose("To delegate!")
-            ).data,
+            data: (await Diamond.populateTransaction.setPurpose("To delegate!"))
+              .data,
           },
         },
       ],
     };
-    expect(
-      await Diamond.getInvocationsTypedDataHash(INVOCATION_MESSAGE)
-    ).to.eq(
+    expect(await Diamond.getInvocationsTypedDataHash(INVOCATION_MESSAGE)).to.eq(
       "0xf6e94ae88b8b72d51444924d7cf26f28b4eaf7d5d274dffbdc83cb92cb4eeac5"
     );
   });
@@ -179,9 +176,8 @@ describe("DelegatableFacet", () => {
           transaction: {
             to: Diamond.address,
             gasLimit: "21000000000000",
-            data: (
-              await Diamond.populateTransaction.setPurpose("To delegate!")
-            ).data,
+            data: (await Diamond.populateTransaction.setPurpose("To delegate!"))
+              .data,
           },
         },
       ],

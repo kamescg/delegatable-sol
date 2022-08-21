@@ -23,7 +23,7 @@ contract DelegatableFacet is IDelegatable, DelegatableCore {
      * Yes, anyone can assign the facet's own name, but it doesn't do anything, so it's fine.
      */
     function setDomainHash(string calldata contractName) public {
-        domainHashes[address(this)] = getEIP712DomainHash(
+        s.eip712domainTypeHash = getEIP712DomainHash(
             contractName,
             "1",
             block.chainid,
@@ -160,7 +160,7 @@ contract DelegatableFacet is IDelegatable, DelegatableCore {
         internal
         view
         virtual
-        override(DelegatableCore, Context)
+        override(DelegatableCore)
         returns (address sender)
     {
         if (msg.sender == address(this)) {
