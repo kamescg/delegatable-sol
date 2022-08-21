@@ -7,13 +7,16 @@ import {Delegation, Invocation, Invocations, SignedInvocation, SignedDelegation}
 import {DelegatableCore} from "./DelegatableCore.sol";
 import {IDelegatable} from "./interfaces/IDelegatable.sol";
 
+struct AppStorage {
+    bytes32 eip712domainTypeHash;
+}
+
 contract DelegatableFacet is IDelegatable, DelegatableCore {
+    AppStorage internal s;
+
     /* ===================================================================================== */
     /* External Functions                                                                    */
     /* ===================================================================================== */
-
-    /// @notice The hashes of the domain separators used in the EIP712 domain hash.
-    mapping(address => bytes32) public domainHashes;
 
     /**
      * @notice Typehash Initializer - To be called by a diamond after facet assignment.
@@ -33,7 +36,7 @@ contract DelegatableFacet is IDelegatable, DelegatableCore {
      * @return bytes32 - The domain hash of the calling contract.
      */
     function getEIP712DomainHash() public view returns (bytes32) {
-        bytes32 domainHash = domainHashes[msg.sender];
+        bytes32 domainHash = s.eip712domainTypeHash;
         require(domainHash != 0, "Domain hash not set");
         return domainHash;
     }
@@ -152,7 +155,7 @@ contract DelegatableFacet is IDelegatable, DelegatableCore {
     /*
      * @notice Overrides the msgSender to enable delegation message signing.
      * @returns address - The account whose authority is being acted on.
-    */
+     */
     function _msgSender()
         internal
         view
