@@ -1,5 +1,5 @@
 import { ethers } from "hardhat";
-import { Contract, ContractFactory, utils, Wallet } from "ethers";
+import { Contract, ContractFactory, ethers, utils, Wallet } from "ethers";
 import { SignerWithAddress } from "@nomiclabs/hardhat-ethers/signers";
 // @ts-ignore
 import { generateUtil } from "eth-delegatable-utils";
@@ -8,6 +8,13 @@ import { expect } from "chai";
 import { Provider } from "@ethersproject/providers";
 import { generateDelegation } from "./utils";
 const { getSigners } = ethers;
+
+const {
+  getSelectors,
+  FacetCutAction,
+  removeSelectors,
+  findAddressPositionInFacets,
+} = require("../scripts/diamond.js");
 
 describe("DelegatableFacet", () => {
   const CONTACT_NAME = "MyDiamond";
@@ -19,6 +26,8 @@ describe("DelegatableFacet", () => {
   let pk0: string;
   let pk1: string;
 
+  let DiamondCutFacet: Contract;
+  let DiamondCutFacetFactory: ContractFactory;
   let Diamond: Contract;
   let DiamondFactory: ContractFactory;
   let PurposeFacet: Contract;
@@ -32,6 +41,7 @@ describe("DelegatableFacet", () => {
       signer0.provider as unknown as Provider
     );
 
+    DiamondCutFacetFactory = await ethers.getContractFactory("DiamondCutFacet");
     DiamondFactory = await ethers.getContractFactory("Diamond");
     PurposeFacetFactory = await ethers.getContractFactory("MockPurposeFacet");
     DelegatableFacetFactory = await ethers.getContractFactory(
@@ -43,9 +53,37 @@ describe("DelegatableFacet", () => {
   });
 
   beforeEach(async () => {
-    Diamond = await DiamondFactory.connect(wallet0).deploy();
+    DiamondCutFacet = await DiamondCutFacetFactory.deploy();
+    const BareDiamond = await DiamondFactory.connect(wallet0).deploy(
+      wallet0.address,
+      DiamondCutFacet.address
+    );
     PurposeFacet = await PurposeFacetFactory.connect(wallet0).deploy();
     DelegatableFacet = await DelegatableFacetFactory.connect(wallet0).deploy();
+
+    // Create proxy for ethers.js diamond interface so diamond exposes all facet methods:
+    const Diamond = createDiamondProxy(BareDiamond, [
+      DiamondCutFacet,
+      PurposeFacet,
+      DelegatableFacet,
+    ]);
+
+    // Add purpose facet to the Diamond
+    Diamond.diamondCut([{
+      facetAddress: PurposeFacet.address,
+      action: FacetCutAction.Add,
+      functionSelectors: getSelectors(PurposeFacet),
+    }], "0x0", "0x0");
+
+    // Generate delegatable init code to generate domain typehash
+    const initTypehashBytes = DelegatableFacet.populateTransaction.setDomainHash(CONTACT_NAME);
+    // Add delegatable facet to the diamond
+    Diamond.diamondCut([{
+      facetAddress: DelegatableFacet.address,
+      action: FacetCutAction.Add,
+      functionSelectors: getSelectors(DelegatableFacet),
+    //   - run delegatable init code to generate domain typehash
+    }], DelegatableFacet.address, initTypehashBytes);
 
     CONTRACT_INFO = {
       chainId: Diamond.deployTransaction.chainId,
@@ -240,3 +278,26 @@ describe("DelegatableFacet", () => {
     });
   });
 });
+
+/* @notice Merges multiple ethers.js contract instances' interfaces into the first one.
+ */
+function createDiamondProxy(diamond: Contract, facets: Contract[]) {
+  return new Proxy(diamond, {
+    get: function (target, name) {
+      let requested = target.getOwnProperty(name);
+      if (requested) {
+        return requested;
+      }
+      for (const facet of facets) {
+        requested = facet.getOwnProperty(name);
+        if (requested) {
+          const instance = new ethers.Contract(
+            diamond.address,
+            facet.interface
+          );
+          return instance.getOwnProperty(name);
+        }
+      }
+    },
+  });
+}
