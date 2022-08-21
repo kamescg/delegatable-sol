@@ -5,8 +5,8 @@ export default async function deploy(hardhat: HardhatRuntimeEnvironment) {
 
   const { deploy } = deployments;
   const { deployer } = await getNamedAccounts();
-  await deploy("DelegatableBasic", {
-    contract: "DelegatableBasic",
+  await deploy("DelegatableFacet", {
+    contract: "DelegatableFacet",
     from: deployer,
     args: [],
     skipIfAlreadyDeployed: true,
