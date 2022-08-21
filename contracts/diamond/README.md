@@ -1,5 +1,7 @@
 # Delegatable Diamond
 
+![A diamond with lightning coming out of it](../../img/diamond.png)
+
 [DelegatableFacet.sol](../DelegatableFacet.sol) is a standalone contract for [ERC-2535 Diamond](https://eips.ethereum.org/EIPS/eip-2535) contracts. Diamonds are a type of proxy contract that allows people to add new "facets" to it (like adding a method to a mutable object).
 
 Once this facet is added to a Diamond, it will have all of the Delegatable interfaces exposed.
