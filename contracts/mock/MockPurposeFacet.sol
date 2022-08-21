@@ -4,10 +4,18 @@ pragma solidity 0.8.15;
 import "@openzeppelin/contracts/access/Ownable.sol";
 import "../Delegatable.sol";
 
+struct AppStorage {
+  string purpose;
+}
+
 contract MockPurposeFacet is Ownable {
-    string public purpose = "What is my purpose?";
+    AppStorage internal s;
+
+    function purpose () public view returns (string memory) {
+        return s.purpose;
+    }
 
     function setPurpose(string memory purpose_) public onlyOwner {
-        purpose = purpose_;
+        s.purpose = purpose_;
     }
 }

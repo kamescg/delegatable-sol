@@ -78,11 +78,12 @@ describe("DelegatableFacet", () => {
         },
       ],
       ethers.constants.AddressZero,
-      '0x'
+      "0x"
     );
 
     // Generate delegatable init code to generate domain typehash
-    const populatedTx = await DelegatableFacet.populateTransaction.setDomainHash(CONTACT_NAME);
+    const populatedTx =
+      await DelegatableFacet.populateTransaction.setDomainHash(CONTACT_NAME);
     const initTypehashBytes = populatedTx.data;
     // Add delegatable facet to the diamond
     Diamond.diamondCut(
@@ -109,7 +110,10 @@ describe("DelegatableFacet", () => {
 
   describe("contractInvoke(Invocation[] calldata batch)", () => {
     it("should SUCCEED to EXECUTE batched Invocations", async () => {
+      console.log('getting purpose')
+      await Diamond.setPurpose("What is my purpose?");
       const purpose = await Diamond.purpose();
+      console.log('got purpose', purpose);
       expect(purpose).to.eq("What is my purpose?");
 
       const _delegation = generateDelegation(
@@ -119,7 +123,7 @@ describe("DelegatableFacet", () => {
         wallet1.address
       );
 
-      console.log('invoking');
+      console.log("invoking");
       await Diamond.contractInvoke([
         {
           authority: [_delegation],
@@ -134,6 +138,7 @@ describe("DelegatableFacet", () => {
       ]);
 
       const updatedPurpose = await Diamond.purpose();
+      console.dir(updatedPurpose);
       expect(updatedPurpose).to.eq("To delegate!");
     });
   });
@@ -233,7 +238,7 @@ function createDiamondProxy(diamond: Contract, facets: Contract[]) {
             facet.interface,
             diamond.signer
           );
-          return Reflect.get(instance, name);
+          return Reflect.get(instance, name).bind(instance);
         }
       }
     },
