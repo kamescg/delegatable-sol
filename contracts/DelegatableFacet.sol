@@ -32,12 +32,12 @@ abstract contract Delegatable is IDelegatable, DelegatableCore {
       * @notice Domain Hash Getter
       * @return bytes32 - The domain hash of the calling contract.
      */
-    function getEIP712DomainHash(address verifyingContract) 
+    function getEIP712DomainHash() 
         public
         view
         returns (bytes32)
     {
-        return domainHashes[verifyingContract];
+        return domainHashes[msg.sender];
     }
 
     /* ===================================================================================== */
