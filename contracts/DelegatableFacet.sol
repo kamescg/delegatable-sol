@@ -7,7 +7,7 @@ import {Delegation, Invocation, Invocations, SignedInvocation, SignedDelegation}
 import {DelegatableCore} from "./DelegatableCore.sol";
 import {IDelegatable} from "./interfaces/IDelegatable.sol";
 
-contract Delegatable is IDelegatable, DelegatableCore {
+contract DelegatableFacet is IDelegatable, DelegatableCore {
     /* ===================================================================================== */
     /* External Functions                                                                    */
     /* ===================================================================================== */
@@ -147,6 +147,32 @@ contract Delegatable is IDelegatable, DelegatableCore {
             );
             _invoke(signedInvocation.invocations.batch, invocationSigner);
         }
+    }
+
+    /*
+     * @notice Overrides the msgSender to enable delegation message signing.
+     * @returns address - The account whose authority is being acted on.
+    */
+    function _msgSender()
+        internal
+        view
+        virtual
+        override(DelegatableCore, Context)
+        returns (address sender)
+    {
+        if (msg.sender == address(this)) {
+            bytes memory array = msg.data;
+            uint256 index = msg.data.length;
+            assembly {
+                sender := and(
+                    mload(add(array, index)),
+                    0xffffffffffffffffffffffffffffffffffffffff
+                )
+            }
+        } else {
+            sender = msg.sender;
+        }
+        return sender;
     }
 
     /* ===================================================================================== */
