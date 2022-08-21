@@ -69,6 +69,9 @@ describe("DelegatableFacet", () => {
     ]);
 
     // Add purpose facet to the Diamond
+    const setPurposeTx = await PurposeFacet.populateTransaction.setPurpose(
+      "What is my purpose?"
+    );
     Diamond.diamondCut(
       [
         {
@@ -77,8 +80,8 @@ describe("DelegatableFacet", () => {
           functionSelectors: getSelectors(PurposeFacet),
         },
       ],
-      ethers.constants.AddressZero,
-      "0x"
+      PurposeFacet.address,
+      setPurposeTx.data
     );
 
     // Generate delegatable init code to generate domain typehash
@@ -110,10 +113,9 @@ describe("DelegatableFacet", () => {
 
   describe("contractInvoke(Invocation[] calldata batch)", () => {
     it("should SUCCEED to EXECUTE batched Invocations", async () => {
-      console.log('getting purpose')
-      await Diamond.setPurpose("What is my purpose?");
+      console.log("getting purpose");
       const purpose = await Diamond.purpose();
-      console.log('got purpose', purpose);
+      console.log("got purpose", purpose);
       expect(purpose).to.eq("What is my purpose?");
 
       const _delegation = generateDelegation(

@@ -5,13 +5,13 @@ import "@openzeppelin/contracts/access/Ownable.sol";
 import "../Delegatable.sol";
 
 struct AppStorage {
-  string purpose;
+    string purpose;
 }
 
 contract MockPurposeFacet is Ownable {
     AppStorage internal s;
 
-    function purpose () public view returns (string memory) {
+    function purpose() public view returns (string memory) {
         return s.purpose;
     }
 
