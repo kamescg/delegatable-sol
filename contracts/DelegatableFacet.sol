@@ -18,7 +18,7 @@ contract Delegatable is IDelegatable, DelegatableCore {
     /**
      * @notice Typehash Initializer - To be called by a diamond after facet assignment.
      */
-    function setDomainHash(string contractName) public {
+    function setDomainHash(string calldata contractName) public {
         domainHashes[address(this)] = getEIP712DomainHash(
             contractName,
             "1",
