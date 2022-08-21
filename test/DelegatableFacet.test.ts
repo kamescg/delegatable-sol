@@ -55,7 +55,6 @@ describe("DelegatableFacet", () => {
 
   beforeEach(async () => {
     DiamondCutFacet = await DiamondCutFacetFactory.deploy();
-    console.log('assigning chainId from', DiamondCutFacet.deployTransaction);
     chainId = DiamondCutFacet.deployTransaction.chainId;
     const BareDiamond = await DiamondFactory.connect(wallet0).deploy(
       wallet0.address,
@@ -114,13 +113,10 @@ describe("DelegatableFacet", () => {
     delegatableUtils = generateUtil(CONTRACT_INFO);
   });
 
-  /*
   describe("contractInvoke(Invocation[] calldata batch)", () => {
     it("should SUCCEED to EXECUTE batched Invocations", async () => {
-      console.log("getting purpose");
-      //const purpose = await Diamond.purpose();
-      //console.log("got purpose", purpose);
-      //expect(purpose).to.eq("What is my purpose?");
+      const purpose = await Diamond.purpose();
+      expect(purpose).to.eq("What is my purpose?");
 
       const _delegation = generateDelegation(
         CONTACT_NAME,
@@ -129,7 +125,6 @@ describe("DelegatableFacet", () => {
         wallet1.address
       );
 
-      console.log("invoking");
       await Diamond.contractInvoke([
         {
           authority: [_delegation],
@@ -143,13 +138,11 @@ describe("DelegatableFacet", () => {
         },
       ]);
 
-      console.log('invoked')
       const updatedPurpose = await Diamond.purpose();
-      console.log("got updated purpose", updatedPurpose);
       expect(updatedPurpose).to.eq("To delegate!");
     });
   });
-*/
+
   describe("invoke(SignedInvocation[] calldata signedInvocations)", () => {
     it("should SUCCEED to EXECUTE a single Invocation from an unsigned authority", async () => {
       const INVOCATION_MESSAGE = {
@@ -174,12 +167,11 @@ describe("DelegatableFacet", () => {
         INVOCATION_MESSAGE,
         pk0
       );
-      await Diamond.invoke([ invocation ]);
+      await Diamond.invoke([invocation]);
       expect(await Diamond.purpose()).to.eq("To delegate!");
     });
 
     it("should SUCCEED to EXECUTE batched SignedInvocations", async () => {
-      console.log("Diamond", Diamond);
       const _delegation = generateDelegation(
         CONTACT_NAME,
         Diamond,
@@ -222,14 +214,13 @@ describe("DelegatableFacet", () => {
 /* @notice Merges multiple ethers.js contract instances' interfaces into the first one.
  */
 function createDiamondProxy(diamond: Contract, facets: Contract[]) {
-
   const mergedInterfaces = facets.reduce((acc, facet) => {
     return acc.concat(...facet.interface.fragments.map(fragmentToJSON));
   }, diamond.interface.fragments.map(fragmentToJSON));
 
   type InterfaceFragment = {
     format: (type: string) => string;
-  }
+  };
 
   function fragmentToJSON(fragment: InterfaceFragment) {
     return JSON.parse(fragment.format(ethers.utils.FormatTypes.json));
@@ -240,20 +231,30 @@ function createDiamondProxy(diamond: Contract, facets: Contract[]) {
     mergedInterfaces,
     diamond.signer
   );
-  
+
   const proxyInstance = new Proxy(instance, {
     getOwnPropertyDescriptor(target, prop) {
       if (prop in instance) {
-        return { writable: true, configurable: true, enumerable: true, value: Reflect.get(instance, prop) };
+        return {
+          writable: true,
+          configurable: true,
+          enumerable: true,
+          value: Reflect.get(instance, prop),
+        };
       }
-      return { writable: true, configurable: true, enumerable: true, value: Reflect.get(target, prop) };
+      return {
+        writable: true,
+        configurable: true,
+        enumerable: true,
+        value: Reflect.get(target, prop),
+      };
     },
     get: (target, prop) => {
       if (prop in instance) {
         return Reflect.get(instance, prop);
       }
       return Reflect.get(target, prop);
-    }
+    },
   });
 
   return proxyInstance;
