@@ -14,7 +14,7 @@ If you're on the Ethereum mainnet, you can use our pre-deployed [Delegatable Dia
 
 If you're using [ERC-712 signTypedData signatures](https://eips.ethereum.org/EIPS/eip-712), it's probably a best practice to re-use your `domainHash` between other signatures and the Delegatable ones. To reuse the domainHash storage with this facet, you can copy the `AppStorage` usage in [DelegatableFacet.sol](./DelegatableFacet.sol).
 
-If you're already using that exact pattern for your `domainHash`, you can simply add the facet with no init code. If you are not using that exact pattern for storing a `domainHash`, you should add your facet with an initCode for setting that value:
+If you're already using that exact pattern for your `domainHash`, you can simply add the facet with no init code. If you are not using that exact pattern for storing a `domainHash`, you must add your facet with an initCode for setting that value:
 
 ```javascript
 // Generate delegatable init code to generate domain typehash
