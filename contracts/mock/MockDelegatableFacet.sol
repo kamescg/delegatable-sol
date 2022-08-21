@@ -2,9 +2,9 @@
 pragma solidity 0.8.15;
 
 import "@openzeppelin/contracts/access/Ownable.sol";
-import "../Delegatable.sol";
+import "../DelegatableFacet.sol";
 
-contract MockDelegatableFacet is DelegatableFacet, Ownable {
+contract MockDelegatableFacet is DelegatableFacet {
     string public purpose = "What is my purpose?";
 
     constructor(string memory contractName) Delegatable(contractName, "1") {}
