@@ -1,5 +1,5 @@
 import { ethers } from "hardhat";
-import { Contract, ContractFactory, ethers, utils, Wallet } from "ethers";
+import { Contract, ContractFactory, utils, Wallet } from "ethers";
 import { SignerWithAddress } from "@nomiclabs/hardhat-ethers/signers";
 // @ts-ignore
 import { generateUtil } from "eth-delegatable-utils";
@@ -107,87 +107,6 @@ describe("DelegatableFacet", () => {
     delegatableUtils = generateUtil(CONTRACT_INFO);
   });
 
-  it("READ getDelegationTypedDataHash(Delegation memory delegation)", async () => {
-    const DELEGATION = {
-      delegate: wallet0.address,
-      authority:
-        "0x0000000000000000000000000000000000000000000000000000000000000000",
-      caveats: [],
-    };
-    expect(await Diamond.getDelegationTypedDataHash(DELEGATION)).to.eq(
-      "0x5352e474c0624192d7bdd9ace20cca8e397aa705676ef4f494218dcd291aac36"
-    );
-  });
-  it("READ getInvocationsTypedDataHash(Invocations memory invocations)", async () => {
-    const _delegation = generateDelegation(
-      CONTACT_NAME,
-      Diamond,
-      pk0,
-      wallet1.address
-    );
-    const INVOCATION_MESSAGE = {
-      replayProtection: {
-        nonce: "0x01",
-        queue: "0x00",
-      },
-      batch: [
-        {
-          authority: [_delegation],
-          transaction: {
-            to: Diamond.address,
-            gasLimit: "21000000000000",
-            data: (await Diamond.populateTransaction.setPurpose("To delegate!"))
-              .data,
-          },
-        },
-      ],
-    };
-    expect(await Diamond.getInvocationsTypedDataHash(INVOCATION_MESSAGE)).to.eq(
-      "0xf6e94ae88b8b72d51444924d7cf26f28b4eaf7d5d274dffbdc83cb92cb4eeac5"
-    );
-  });
-  it("READ getEIP712DomainHash(string,string,uint256,address)", async () => {});
-  it("READ verifyDelegationSignature(SignedDelegation memory signedDelegation)`", async () => {
-    const _delegation = generateDelegation(
-      CONTACT_NAME,
-      Diamond,
-      pk0,
-      wallet1.address
-    );
-    expect(await Diamond.verifyDelegationSignature(_delegation)).to.eq(
-      wallet0.address
-    );
-  });
-  it("READ verifyInvocationSignature(SignedInvocation memory signedInvocation)", async () => {
-    const _delegation = generateDelegation(
-      CONTACT_NAME,
-      Diamond,
-      pk0,
-      wallet1.address
-    );
-    const INVOCATION_MESSAGE = {
-      replayProtection: {
-        nonce: "0x01",
-        queue: "0x00",
-      },
-      batch: [
-        {
-          authority: [_delegation],
-          transaction: {
-            to: Diamond.address,
-            gasLimit: "21000000000000",
-            data: (await Diamond.populateTransaction.setPurpose("To delegate!"))
-              .data,
-          },
-        },
-      ],
-    };
-    const invocation = delegatableUtils.signInvocation(INVOCATION_MESSAGE, pk0);
-    expect(await Diamond.verifyInvocationSignature(invocation)).to.eq(
-      wallet0.address
-    );
-  });
-
   describe("contractInvoke(Invocation[] calldata batch)", () => {
     it("should SUCCEED to EXECUTE batched Invocations", async () => {
       expect(await Diamond.purpose()).to.eq("What is my purpose?");
@@ -293,18 +212,19 @@ describe("DelegatableFacet", () => {
 function createDiamondProxy(diamond: Contract, facets: Contract[]) {
   return new Proxy(diamond, {
     get: function (target, name) {
-      let requested = target.getOwnProperty(name);
+      let requested = Reflect.get(target, name);
       if (requested) {
         return requested;
       }
       for (const facet of facets) {
-        requested = facet.getOwnProperty(name);
+        requested = Reflect.get(facet, name);
         if (requested) {
+          console.log('proxy is trapping on', name);
           const instance = new ethers.Contract(
             diamond.address,
             facet.interface
           );
-          return instance.getOwnProperty(name);
+          return Reflect.get(instance, name);
         }
       }
     },
