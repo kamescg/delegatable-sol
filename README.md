@@ -22,7 +22,7 @@ Solidity framework for extending any contract with counterfactual revocable-dele
 These contracts can be deployed to a network by running:
 `yarn deploy <networkName>`
 
-Some of them [have been deployed already and can be reused](./docs/deployments.md).
+Some of them [have been deployed already and can be reused](./deployments.md).
 
 ## Verification
 

@@ -52,5 +52,4 @@ export default async function deploy(hardhat: HardhatRuntimeEnvironment) {
     skipIfAlreadyDeployed: true,
     log: true,
   });
-
 }
