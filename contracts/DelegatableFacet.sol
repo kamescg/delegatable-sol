@@ -7,6 +7,9 @@ import {Delegation, Invocation, Invocations, SignedInvocation, SignedDelegation}
 import {DelegatableCore} from "./DelegatableCore.sol";
 import {IDelegatable} from "./interfaces/IDelegatable.sol";
 
+/* @notice AppStorage is used so ERC2535 Diamond facets do not clobber each others' storage.
+ * https://eip2535diamonds.substack.com/p/keep-your-data-right-in-eip2535-diamonds?utm_source=substack&utm_campaign=post_embed&utm_medium=web
+ */
 struct AppStorage {
     bytes32 eip712domainTypeHash;
 }
