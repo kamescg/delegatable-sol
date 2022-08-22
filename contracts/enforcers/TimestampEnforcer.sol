@@ -6,15 +6,14 @@ import {BytesLib} from "../libraries/BytesLib.sol";
 
 contract TimestampEnforcer is CaveatEnforcer {
     /**
-     * @title Enforce Timestamp Caveat
      * @notice Allows the delegator to specify the latest timestamp the delegation will be valid.
      * @param terms - The latest timestamp this delegation is valid.
      * @param transaction - The transaction the delegate might try to perform.
      * @param delegationHash - The hash of the delegation being operated on.
-     */
+     **/
     function enforceCaveat(
         bytes calldata terms,
-        Transaction calldata tx,
+        Transaction calldata transaction,
         bytes32 delegationHash
     ) public override returns (bool) {
         uint128 logicOperator = BytesLib.toUint128(terms, 0);

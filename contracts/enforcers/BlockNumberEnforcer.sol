@@ -6,7 +6,6 @@ import {BytesLib} from "../libraries/BytesLib.sol";
 
 contract BlockNumberEnforcer is CaveatEnforcer {
     /**
-     * @title Enforce Block Number Caveat
      * @notice Allows the delegator to specify the latest block the delegation will be valid.
      * @param terms - The range of blocks this delegation is valid. See test for example.
      * @param transaction - The transaction the delegate might try to perform.

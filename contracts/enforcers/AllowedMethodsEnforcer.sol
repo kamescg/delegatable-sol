@@ -5,7 +5,6 @@ import "../CaveatEnforcer.sol";
 
 contract AllowedMethodsEnforcer is CaveatEnforcer {
     /**
-     * @title Enforce Allowed Methods Caveat
      * @notice Allows the delegator to limit what methods the delegate may call.
      * @param terms - A series of 4byte method identifiers, representing the methods that the delegate is allowed to call.
      * @param transaction - The transaction the delegate might try to perform.

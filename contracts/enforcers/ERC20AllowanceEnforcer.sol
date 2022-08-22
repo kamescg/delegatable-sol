@@ -9,7 +9,6 @@ contract ERC20AllowanceEnforcer is CaveatEnforcer {
     mapping(address => mapping(bytes32 => uint256)) spentMap;
 
     /**
-     * @title Enforce ERC20 Allowance Caveat
      * @notice Allows the delegator to specify a maximum sum of the contract token to transfer on their behalf.
      * @param terms - The numeric maximum allowance that the recipient may transfer on the signer's behalf.
      * @param transaction - The transaction the delegate might try to perform.
