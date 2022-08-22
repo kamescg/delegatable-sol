@@ -13,7 +13,7 @@ contract BlockNumberEnforcer is CaveatEnforcer {
      */
     function enforceCaveat(
         bytes calldata terms,
-        Transaction calldata tx,
+        Transaction calldata transaction,
         bytes32 delegationHash
     ) public override returns (bool) {
         uint128 logicOperator = BytesLib.toUint128(terms, 0);

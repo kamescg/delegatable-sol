@@ -15,7 +15,7 @@ contract LimitedCallsEnforcer is CaveatEnforcer {
      */
     function enforceCaveat(
         bytes calldata terms,
-        Transaction calldata,
+        Transaction calldata transaction,
         bytes32 delegationHash
     ) public override returns (bool) {
         uint256 limit = BytesLib.toUint256(terms, 0);

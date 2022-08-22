@@ -5,7 +5,6 @@ import "../TypesAndDecoders.sol";
 
 interface IDelegatable {
     /**
-     * @title Contract Invoke
      * @notice Allows a smart contract to submit a batch of invocations for processing, allowing itself to be the delegate.
      * @param batch Invocation[] - The batch of invocations to process.
      * @return success bool - Whether the batch of invocations was successfully processed.
@@ -15,7 +14,6 @@ interface IDelegatable {
         returns (bool);
 
     /**
-     * @title Invoke
      * @notice Allows anyone to submit a batch of signed invocations for processing.
      * @param signedInvocations SignedInvocation[] - The batch of signed invocations to process.
      * @return success bool - Whether the batch of invocations was successfully processed.
@@ -25,7 +23,6 @@ interface IDelegatable {
         returns (bool success);
 
     /**
-     * @title Get Delegation typed data hash
      * @notice Returns the typehash for this contract's delegation signatures.
      * @param delegation Delegation - The delegation to get the type of
      * @return bytes32 - The type of the delegation
@@ -36,7 +33,6 @@ interface IDelegatable {
         returns (bytes32);
 
     /**
-     * @title Get Invocations typed data hash
      * @notice Returns the typehash for this contract's invocation signatures.
      * @param invocations Invocations
      * @return bytes32 - The type of the Invocations
@@ -54,9 +50,8 @@ interface IDelegatable {
     ) external pure returns (bytes32);
 
     /**
-     * @title Verify Invocation Signature
      * @notice Verifies that the given invocation is valid.
-     * @param invocation Invocation - The invocation to verify
+     * @param signedInvocation - The signed invocation to verify
      * @return address - The address of the account authorizing this invocation to act on its behalf.
      */
     function verifyInvocationSignature(SignedInvocation memory signedInvocation)
@@ -65,7 +60,6 @@ interface IDelegatable {
         returns (address);
 
     /**
-     * @title Verify Delegation Signature
      * @notice Verifies that the given delegation is valid.
      * @param signedDelegation - The delegation to verify
      * @return address - The address of the account authorizing this delegation to act on its behalf.
