@@ -36,7 +36,7 @@ interface IDelegatable {
         returns (bytes32);
 
     /**
-     * @title Get Invocations typed data hash 
+     * @title Get Invocations typed data hash
      * @notice Returns the typehash for this contract's invocation signatures.
      * @param invocations Invocations
      * @return bytes32 - The type of the Invocations
