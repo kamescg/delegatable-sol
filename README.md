@@ -29,7 +29,7 @@ Some of them [have been deployed already and can be reused](./deployments.md).
 These contracts can be verified on Etherscan.
 `yarn verify`
 
-# Testing
+## Testing
 
 Run the unit tests locally with:
 `yarn test`
@@ -38,4 +38,8 @@ Run the unit tests locally with:
 
 Generate the test coverage report with:
 `yarn coverage`
+
+## Documentation
+
+Add inline docs in the [natspec](https://docs.soliditylang.org/en/v0.8.15/natspec-format.html) format. The command `yarn docs` and `yarn docs:html` will generate the markdown and minimal html site which can be easily published.
 
