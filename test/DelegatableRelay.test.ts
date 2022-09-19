@@ -44,9 +44,7 @@ describe("DelegatableRelay", () => {
   });
 
   beforeEach(async () => {
-    Mock = await MockFactory.connect(wallet0).deploy(
-     DelegatableRelay.address 
-    );
+    Mock = await MockFactory.connect(wallet0).deploy(DelegatableRelay.address);
     AllowedMethodsEnforcer = await AllowedMethodsEnforcerFactory.connect(
       wallet0
     ).deploy();
@@ -89,9 +87,8 @@ describe("DelegatableRelay", () => {
           transaction: {
             to: Mock.address,
             gasLimit: "21000000000000",
-            data: (
-              await Mock.populateTransaction.setPurpose("To delegate!")
-            ).data,
+            data: (await Mock.populateTransaction.setPurpose("To delegate!"))
+              .data,
           },
         },
       ],
@@ -141,9 +138,8 @@ describe("DelegatableRelay", () => {
             transaction: {
               to: Mock.address,
               gasLimit: "21000000000000",
-              data: (
-                await Mock.populateTransaction.setPurpose("To delegate!")
-              ).data,
+              data: (await Mock.populateTransaction.setPurpose("To delegate!"))
+                .data,
             },
           },
         ],
@@ -180,9 +176,8 @@ describe("DelegatableRelay", () => {
             transaction: {
               to: Mock.address,
               gasLimit: "21000000000000",
-              data: (
-                await Mock.populateTransaction.setPurpose("To delegate!")
-              ).data,
+              data: (await Mock.populateTransaction.setPurpose("To delegate!"))
+                .data,
             },
           },
         ],

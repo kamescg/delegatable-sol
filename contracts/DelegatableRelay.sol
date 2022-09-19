@@ -16,8 +16,8 @@ contract DelegatableRelay is IDelegatable, DelegatableRelayCore {
      */
     constructor() {
         domainHash = getEIP712DomainHash(
-            'DelegatableRelay',
-            '1',
+            "DelegatableRelay",
+            "1",
             block.chainid,
             address(this)
         );
