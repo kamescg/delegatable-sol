@@ -4,7 +4,7 @@ pragma solidity 0.8.15;
 import {EIP712Decoder, EIP712DOMAIN_TYPEHASH} from "./TypesAndDecoders.sol";
 import {Delegation, Invocation, Invocations, SignedInvocation, SignedDelegation, Transaction, ReplayProtection, CaveatEnforcer} from "./CaveatEnforcer.sol";
 
-abstract contract DelegatableCore is EIP712Decoder {
+abstract contract DelegatableRelayCore is EIP712Decoder {
     /// @notice Account delegation nonce manager
     mapping(address => mapping(uint256 => uint256)) internal multiNonce;
 
@@ -119,11 +119,6 @@ abstract contract DelegatableCore is EIP712Decoder {
 
             // Here we perform the requested invocation.
             Transaction memory transaction = invocation.transaction;
-
-            require(
-                transaction.to == address(this),
-                "DelegatableCore:invalid-invocation-target"
-            );
 
             // TODO(@kames): Can we bubble up the error message from the enforcer? Why not? Optimizations?
             success = _execute(

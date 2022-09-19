@@ -4,10 +4,10 @@ pragma solidity 0.8.15;
 // import "hardhat/console.sol";
 import {EIP712DOMAIN_TYPEHASH} from "./TypesAndDecoders.sol";
 import {Delegation, Invocation, Invocations, SignedInvocation, SignedDelegation} from "./CaveatEnforcer.sol";
-import {DelegatableCore} from "./DelegatableCore.sol";
+import {DelegatableRelayCore} from "./DelegatableRelayCore.sol";
 import {IDelegatable} from "./interfaces/IDelegatable.sol";
 
-abstract contract DelegatableRelay is IDelegatable, DelegatableCore {
+abstract contract DelegatableRelay is IDelegatable, DelegatableRelayCore {
     /// @notice The hash of the domain separator used in the EIP712 domain hash.
     bytes32 public immutable domainHash;
 
@@ -81,7 +81,7 @@ abstract contract DelegatableRelay is IDelegatable, DelegatableCore {
         public
         view
         virtual
-        override(IDelegatable, DelegatableCore)
+        override(IDelegatable, DelegatableRelayCore)
         returns (address)
     {
         Delegation memory delegation = signedDelegation.delegation;
