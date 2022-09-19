@@ -14,7 +14,7 @@ export default async function deploy(hardhat: HardhatRuntimeEnvironment) {
   });
 
   await deploy("DelegatableRelay", {
-    contract: "DelegatableFacet",
+    contract: "DelegataleRelay",
     from: deployer,
     args: [],
     skipIfAlreadyDeployed: true,
