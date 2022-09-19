@@ -13,6 +13,14 @@ export default async function deploy(hardhat: HardhatRuntimeEnvironment) {
     log: true,
   });
 
+  await deploy("DelegatableRelay", {
+    contract: "DelegatableRelay",
+    from: deployer,
+    args: [],
+    skipIfAlreadyDeployed: true,
+    log: true,
+  });
+
   await deploy("AllowedMethodsEnforcer", {
     contract: "AllowedMethodsEnforcer",
     from: deployer,
