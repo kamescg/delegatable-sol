@@ -7,19 +7,17 @@ import {Delegation, Invocation, Invocations, SignedInvocation, SignedDelegation}
 import {DelegatableRelayCore} from "./DelegatableRelayCore.sol";
 import {IDelegatable} from "./interfaces/IDelegatable.sol";
 
-abstract contract DelegatableRelay is IDelegatable, DelegatableRelayCore {
+contract DelegatableRelay is IDelegatable, DelegatableRelayCore {
     /// @notice The hash of the domain separator used in the EIP712 domain hash.
     bytes32 public immutable domainHash;
 
     /**
-     * @notice Delegatable Constructor
-     * @param contractName string - The name of the contract
-     * @param version string - The version of the contract
+     * @notice Delegatable Relay Constructor
      */
-    constructor(string memory contractName, string memory version) {
+    constructor() {
         domainHash = getEIP712DomainHash(
-            contractName,
-            version,
+            'DelegatableRelay',
+            '1',
             block.chainid,
             address(this)
         );
