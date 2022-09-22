@@ -125,7 +125,12 @@ describe("RevocationEnforcer", () => {
       ]
     );
 
-    const domainHash = await RevocationEnforcer.getEIP712DomainHash(CONTRACT_NAME, "1", CONTRACT_INFO.chainId, ERC20Delegatable.address);
+    const domainHash = await RevocationEnforcer.getEIP712DomainHash(
+      CONTRACT_NAME,
+      "1",
+      CONTRACT_INFO.chainId,
+      ERC20Delegatable.address
+    );
 
     await RevocationEnforcer.connect(wallet0).revokeDelegation(
       _delegation,
