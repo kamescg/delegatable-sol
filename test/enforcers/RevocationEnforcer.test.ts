@@ -60,8 +60,6 @@ describe("RevocationEnforcer", () => {
   });
 
   it("should SUCCEED to INVOKE method APPROVED for execution", async () => {
-    console.log("Wallet 0", wallet0.address);
-    console.log("Wallet 1", wallet1.address);
     expect(await ERC20Delegatable.balanceOf(wallet0.address)).to.eq(
       ethers.utils.parseEther("1")
     );
@@ -126,7 +124,8 @@ describe("RevocationEnforcer", () => {
         },
       ]
     );
-    console.log(JSON.stringify(_delegation));
+
+    const domainHash = await RevocationEnforcer.getEIP712DomainHash(CONTRACT_NAME, "1", CONTRACT_INFO.chainId, ERC20Delegatable.address);
 
     await RevocationEnforcer.connect(wallet0).revokeDelegation(
       _delegation,
@@ -162,6 +161,6 @@ describe("RevocationEnforcer", () => {
           invocations: invocation.invocations,
         },
       ])
-    ).to.be.revertedWith("LimitedCallsEnforcer:limit-exceeded");
+    ).to.be.revertedWith("RevocationEnforcer:revoked");
   });
 });

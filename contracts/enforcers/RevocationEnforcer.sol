@@ -20,10 +20,14 @@ contract RevocationEnforcer is
         return true;
     }
 
-    function revokeDelegation(SignedDelegation calldata signedDelegation, bytes32 domainHash)
-        public
-    {
-        address signer = verifyExternalDelegationSignature(signedDelegation, domainHash);
+    function revokeDelegation(
+        SignedDelegation calldata signedDelegation,
+        bytes32 domainHash
+    ) public {
+        address signer = verifyExternalDelegationSignature(
+            signedDelegation,
+            domainHash
+        );
         address sender = _msgSender();
         console.log("Sender is ", sender);
         console.log("signer is ", signer);
@@ -35,14 +39,15 @@ contract RevocationEnforcer is
         isRevoked[delegationHash] = true;
     }
 
-    function verifyExternalDelegationSignature(SignedDelegation memory signedDelegation, bytes32 domainHash)
-        public
-        view
-        virtual
-        returns (address)
-    {
+    function verifyExternalDelegationSignature(
+        SignedDelegation memory signedDelegation,
+        bytes32 domainHash
+    ) public view virtual returns (address) {
         Delegation memory delegation = signedDelegation.delegation;
-        bytes32 sigHash = getExternalDelegationTypedDataHash(delegation, domainHash);
+        bytes32 sigHash = getExternalDelegationTypedDataHash(
+            delegation,
+            domainHash
+        );
         address recoveredSignatureSigner = recover(
             sigHash,
             signedDelegation.signature
@@ -50,11 +55,10 @@ contract RevocationEnforcer is
         return recoveredSignatureSigner;
     }
 
-    function getExternalDelegationTypedDataHash(Delegation memory delegation, bytes32 domainHash)
-        public
-        pure
-        returns (bytes32)
-    {
+    function getExternalDelegationTypedDataHash(
+        Delegation memory delegation,
+        bytes32 domainHash
+    ) public pure returns (bytes32) {
         bytes32 digest = keccak256(
             abi.encodePacked(
                 "\x19\x01",
@@ -64,7 +68,6 @@ contract RevocationEnforcer is
         );
         return digest;
     }
-
 
     /**
      * This is boilerplate that must be added to any Delegatable contract if it also inherits
