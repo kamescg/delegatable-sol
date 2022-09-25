@@ -4,5 +4,5 @@ module.exports = {
     _chainId: 1337,
     _chainIdRpc: 1337,
   },
-  skipFiles: ['external', 'test'],
+  skipFiles: ["external", "test", "libraries", "mock", "extensions"],
 };

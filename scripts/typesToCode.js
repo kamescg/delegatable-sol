@@ -38,7 +38,12 @@ function generateCodeFrom(types) {
   return { setup: results, packetHashGetters: [...new Set(packetHashGetters)] };
 }
 
-function generatePacketHashGetters(types, typeName, fields, packetHashGetters = []) {
+function generatePacketHashGetters(
+  types,
+  typeName,
+  fields,
+  packetHashGetters = []
+) {
   if (typeName.includes("[]")) {
     generateArrayPacketHashGetter(typeName, packetHashGetters);
   } else {
@@ -76,7 +81,15 @@ function generatePacketHashGetters(types, typeName, fields, packetHashGetters = 
 }
 
 function getEncodedValueFor(field) {
-  const basicEncodableTypes = ["address", "bool", "bytes32", "int", "uint", "uint256", "string"];
+  const basicEncodableTypes = [
+    "address",
+    "bool",
+    "bytes32",
+    "int",
+    "uint",
+    "uint256",
+    "string",
+  ];
   const hashedTypes = ["bytes"];
   if (basicEncodableTypes.includes(field.type)) {
     return `_input.${field.name}`;
@@ -91,7 +104,9 @@ function getEncodedValueFor(field) {
 
 function packetHashGetterName(typeName) {
   if (typeName.includes("[]")) {
-    return `GET_${typeName.substr(0, typeName.length - 2).toUpperCase()}_ARRAY_PACKETHASH`;
+    return `GET_${typeName
+      .substr(0, typeName.length - 2)
+      .toUpperCase()}_ARRAY_PACKETHASH`;
   }
   return `GET_${typeName.toUpperCase()}_PACKETHASH`;
 }
@@ -106,7 +121,9 @@ function generateArrayPacketHashGetter(typeName, packetHashGetters) {
     for (uint i = 0; i < _input.length; i++) {
       encoded = bytes.concat(
         encoded,
-        ${packetHashGetterName(typeName.substr(0, typeName.length - 2))}(_input[i])
+        ${packetHashGetterName(
+          typeName.substr(0, typeName.length - 2)
+        )}(_input[i])
       );
     }
     ${
