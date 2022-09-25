@@ -41,7 +41,7 @@
     "@openzeppelin/contracts": "^4.7.2"
   },
   "devDependencies": {
-    "@ethersproject/abi": "5.6.1",
+    "@ethersproject/abi": "5.7.0",
     "@ethersproject/bytes": "^5.0.0",
     "@ethersproject/contracts": "^5.0.0",
     "@ethersproject/hardware-wallets": "^5.0.14",
