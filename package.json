@@ -45,7 +45,7 @@
     "@ethersproject/bytes": "^5.0.0",
     "@ethersproject/contracts": "^5.0.0",
     "@ethersproject/hardware-wallets": "^5.0.14",
-    "@ethersproject/providers": "^5.0.0",
+    "@ethersproject/providers": "^5.7.2",
     "@metamask/eth-sig-util": "^4.0.1",
     "@nomiclabs/hardhat-ethers": "2.0.4",
     "@nomiclabs/hardhat-etherscan": "3.0.0",
